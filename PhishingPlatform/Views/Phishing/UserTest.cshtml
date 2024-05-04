@@ -1,0 +1,200 @@
+﻿
+@model PhishingPlatform.Models.UserViewModel
+@{
+    ViewBag.Title = "UserTest";
+    var EmailTemps = ViewBag.EmailTemps as SelectList;
+}
+
+<link href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap.min.js"></script>
+<script src="https://smtpjs.com/v3/smtp.js"></script>
+
+
+
+<div id="layoutSidenav">
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <h1 class="mt-4">Phishing</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item">Phishing</li>
+                    <li class="breadcrumb-item active"><a href="index.html">User Test</a></li>
+                </ol>
+                <div class="row">
+                    <div class="col col-lg-7">
+                        <h1>Create a new user:</h1>
+                        <p class="caption-top"> Add a new user for the test and select you desired template to choose</p>
+
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="card bg-light text-dark mb-4">
+
+                            <div class="card-body">Enter the User's Email</div>
+                            @using (Html.BeginForm("AddUser", "Phishing", FormMethod.Post, new { @novalidate = "novalidate", id = "addUserForm" }))
+                            {
+                                <div class="card-footer d-flex align-items-center justify-content-between">
+                                    @Html.TextBoxFor(model => model.NewUser.Email, new { @class = "form-control", placeholder = "example@user.com", @id = "emailuser", @name = "Email", @autocomplete = "email" })
+                                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    <button type="submit" class="btn btn-outline-primary" id="addUser">Add User</button>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                </div>
+
+                <hr class="dro-group-divider my-xxl-5" />
+
+                <div class="contact__wrapper shadow-lg mt-n9">
+                    <div class="row no-gutters">
+                        <div class="row contact-info__wrapper gradient-brand-color p-5 order-lg-2">
+                            <div class="col-lg-6">
+                                <label class="required-field" for="firstName">Select email receiver</label>
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <i class="fas fa-table me-1"></i>
+                                        List of emails
+                                    </div>
+                                    <div class="card-body">
+                                        <table id="example" class="table table-striped table-bordered " style="width:100%">
+                                            <thead>
+                                                <tr>
+                                                    <th>User ID</th>
+                                                    <th>Email</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var user in Model.Users)
+                                                {
+                                                    <tr>
+                                                        <td>@user.UserID</td>
+                                                        <td>@user.Email</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+
+                                        </table>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                @using (Html.BeginForm("SendEmail", "Phishing", FormMethod.Post, new { @novalidate = "novalidate", id = "sendEmail" }))
+                                {
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label class="required-field" for="firstName">Select Template</label>
+                                                @Html.DropDownListFor(model => model.selectedTemplate, ViewBag.EmailTemps as SelectList, new { @class = "form-select", @id = "SelectedTemplate" })
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label class="required-field" for="firstName">Reciepent Email</label>
+                                                @Html.TextBoxFor(model => model.SelectedEmail, new { @class = "form-control", placeholder = "example@user.com", @id = "SelectedEmail", @name = "Email", @autocomplete = "email"})
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr class="dropdown-divider my-4" />
+                                    <div class="row">
+
+
+                                        <div class="col-lg-auto">
+                                            <button type="submit" class="btn btn-primary">Send</button>
+                                        </div>
+
+                                        <div class="col-lg-auto">
+                                            <div class="form-group">
+                                                <button type="button" class="btn btn-secondary">Cancel</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <hr class="table-group-divider my-lg-4" />
+
+                                    <div class="row">
+                                        <h1>Phishing pages</h1>
+                                        <hr class="dropdown-divider my-sm-2" />
+                                        @*<div class="col-lg-auto">
+                                            <a href=@Url.Content("~/Views/FakePage/Netflix.cshtml")>Netflix</a>
+                                        </div>*@
+                                        <div class="col-lg-auto">
+                                            <a href=@Url.Content("~/Views/FakePage/Google.cshtml")>Google</a>
+                                        </div>
+                                        <div class="col-lg-auto">
+                                            <a href=@Url.Content("~/Views/FakePage/Mubis.cshtml")>Mubis</a>
+                                        </div>
+
+                                    </div>
+
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+
+
+<script>
+    // Initialize DataTable
+    const table = new DataTable('#example', {
+        pagingType: 'simple_numbers',
+        language: {
+            paginate: {
+                next: 'Next',
+                previous: 'Previous'
+            }
+        }
+    });
+
+    // Event handler for row click
+    $('#example tbody').on('click', 'tr', function () {
+        if ($(this).hasClass('selected')) {
+            $(this).removeClass('selected');
+            document.getElementById('selectedEmail').value = '';
+        } else {
+            table.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+            let selectedRow = table.row(this).data();
+            document.getElementById('selectedEmail').value = selectedRow[1]; // Assuming the email is in the second column
+            console.log('Selected Email:', selectedRow[1]); // Add this line
+        }
+    });
+
+
+
+    // Event handler for form submission
+    document.querySelector('#addUser').addEventListener('click', function () {
+        document.getElementById('addUserForm').submit();
+    });
+</script>
+
+
+
+
+<style>
+
+    #example_paginate {
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
+    }
+
+        #example_paginate .paginate_button {
+            display: inline-block;
+            margin-right: 10px;
+        }
+</style>

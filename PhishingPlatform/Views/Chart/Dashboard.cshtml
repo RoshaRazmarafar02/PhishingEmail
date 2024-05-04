@@ -1,0 +1,257 @@
+﻿@model List<PhishingPlatform.InteractionSummary>
+@{
+    ViewBag.Title = "Dashboard";
+}
+
+
+
+<div id="layoutSidenav">
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4">
+                <h1 class="mt-4">Dashboard</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item active">Dashboard</li>
+                </ol>
+                <div class="row">
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card bg-primary text-white mb-4">
+                            <div class="card-body">visit-submition rate</div>
+                            <div class="card-footer d-flex align-items-center justify-content-between">
+                                <h1 class="mt-4">@(ViewBag.SubmitOverVisit)%</h1>
+                                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card bg-warning text-white mb-4">
+                            <div class="card-body">Total tests</div>
+                            <div class="card-footer d-flex align-items-center justify-content-between">
+                                <h1 class="mt-4">@(ViewBag.Total)</h1>
+                                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card bg-success text-white mb-4">
+                            <div class="card-body">Visiting Rate</div>
+                            <div class="card-footer d-flex align-items-center justify-content-between">
+                                <h1 class="mt-4">@(ViewBag.TotalVisitedrate)%</h1>
+                                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card bg-danger text-white mb-4">
+                            <div class="card-body">Submition Rate</div>
+                            <div class="card-footer d-flex align-items-center justify-content-between">
+                                <h1 class="mt-4">@(ViewBag.TotalSubmitrate)%</h1>
+                                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <!-- New Pie Chart -->
+                    <div class="col-xl-6">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <i class="fas fa-chart-area me-1"></i>
+                                Users Interaction Status
+                            </div>
+                            <div class="card-body">
+                                <canvas id="myPieChart" width="100%" height="40"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <i class="fas fa-chart-bar me-1"></i>
+                                Detailed Websites Interaction
+                            </div>
+                            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                            <div class="card-body"><canvas id="myChart" width="100%" height="40"></canvas></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-table me-1"></i>
+                        DataTable Example
+                    </div>
+                    <div class="card-body">
+                        <table id="datatablesSimple">
+                            <thead>
+                                <tr>
+                                    <th>Email</th>
+                                    <th>Email Category, Subject</th>
+                                    <th>Form ID</th>
+                                    <th>Status</th>
+                                    <th>Receiving Date</th>
+                                    <th>Data Submition</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var interaction in Model)
+                                {
+                                    <tr>
+                                        <td>@interaction.UserEmail</td>
+                                        <td>@interaction.EmailCategorySubject</td>
+                                        <td>@interaction.FormID</td>
+                                        <td>@interaction.Status</td>
+                                        <td>@interaction.ReceivingDate</td>
+                                        <td>@interaction.DataSubmission</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+
+
+
+<!-- Your existing HTML code... -->
+
+<script src="~/Content/scripts.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+<script src="assets/demo/chart-area-demo.js"></script>
+<script src="assets/demo/chart-bar-demo.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+<script src="~/Content/datatables-simple-demo.js"></script>
+
+<!-- Add the Chart.js library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+
+<script>
+    // Bar Chart
+    const ctx1 = document.getElementById('myChart').getContext('2d');
+    const labels1 = ["Google", "Mubis"];
+
+    // Get data from ViewBag or any other method you use to pass data to the view
+    const visitsData = @Html.Raw(Json.Encode(ViewBag.VisitsCounts));
+    const submissionsData = @Html.Raw(Json.Encode(ViewBag.SubmissionsCounts));
+
+    // Extract counts for each website
+    const googleVisits = visitsData.find(entry => entry.WebsiteID === 1)?.Count || 0;
+    const mubisVisits = visitsData.find(entry => entry.WebsiteID === 3)?.Count || 0;
+
+    const googleSubmissions = submissionsData.find(entry => entry.WebsiteID === 1)?.Count || 0;
+    const mubisSubmissions = submissionsData.find(entry => entry.WebsiteID === 3)?.Count || 0;
+
+
+    const values = [googleVisits, mubisVisits, googleSubmissions, mubisSubmissions].map(value => parseInt(value));
+    const min = Math.min(...values);
+    const adjustedMin = min < 0 ? 0 : min - 2;
+
+    const myChartData = {
+        labels: labels1,
+        datasets: [{
+            label: 'Number of Visit',
+            data: [googleVisits, mubisVisits],
+            borderWidth: 1,
+            backgroundColor: [
+                'rgb(204, 0, 0)',
+                'rgb(19,79,92)',
+            ],
+        },
+        {
+            label: 'Number of Submissions',
+            data: [googleSubmissions, mubisSubmissions],
+            borderWidth: 1,
+            backgroundColor: [
+                'rgb(219,76,76)',
+                'rgb(89,131,140)',
+            ],
+        }]
+    };
+
+    const myChartOptions = {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        suggestedMin: 0, // Set the beginning of the interval to 0
+                        stepSize: 1 // Set the interval size
+                    }
+                }]
+            }
+    };
+
+    new Chart(ctx1, {
+        type: 'bar',
+        data: myChartData,
+        options: myChartOptions
+    });
+
+
+
+    // Pie Cahrt
+    const ctx2 = document.getElementById('myPieChart').getContext('2d');
+
+    const pieChartData = {
+        labels: ['Visited', 'Not Visited', 'Submitted', 'Pending'],
+        datasets: [
+            {
+                backgroundColor: ['rgb(89, 180, 100)', 'rgb(89,131,140)', 'rgb(100, 45, 60)', 'rgb(80,70,140)'],
+                data: [
+                    @(ViewBag.VisitedCount ?? 1),
+                    @(ViewBag.NotVisitedCount ?? 1),
+                    0,
+                    0
+
+                ]
+            },
+            {
+                backgroundColor: ['rgb(89, 180, 40)', 'rgb(89,131,140)', 'rgb(100, 45, 60)', 'rgb(80,70,140)'],
+                data: [
+                    0,
+                    0,
+                    @(ViewBag.SubmitCount ?? 1),
+                    @(ViewBag.PendingCount ?? 1)
+                ]
+            }
+        ]
+    };
+
+    const pieChartOptions = {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'top',
+                labels: {
+                    generateLabels: function (chart) {
+                        const original = Chart.overrides.pie.plugins.legend.labels.generateLabels;
+                        const labelsOriginal = original.call(this, chart);
+
+                        // Manually set legend colors based on the second dataset
+                        labelsOriginal.forEach((label, i) => {
+                            if (i >= labelsOriginal.length / 2) {
+                                label.fillStyle = pieChartData.datasets[1].backgroundColor[i % 2 + 2];
+                            }
+                        });
+
+                        return labelsOriginal;
+                    }
+                },
+                onClick: function (mouseEvent, legendItem, legend) {
+                    legend.chart.getDatasetMeta(legendItem.datasetIndex).hidden =
+                        legend.chart.isDatasetVisible(legendItem.datasetIndex);
+                    legend.chart.update();
+                }
+            },
+            // ... other options
+        },
+        // ... other options
+    };
+
+    new Chart(ctx2, {
+        type: 'pie',
+        data: pieChartData,
+        options: pieChartOptions
+    });
+</script>

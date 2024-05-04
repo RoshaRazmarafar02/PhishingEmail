@@ -1,0 +1,50 @@
+﻿* {
+    padding: 0;
+    margin: 0;
+}
+
+
+
+body {
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+.login {
+    min-height: 100vh;
+}
+
+.bg-image {
+    background-image: url('../images/Background-Context/AdobeStock_357724632.jpeg');
+    background-size: cover;
+    background-position: center;
+}
+
+.bg-image2-sign {
+    background-image: url('../images/Background-Context/Firefly Iridescent organic shapes with soft movement and flow for log in design minimal 1292.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.login-heading {
+    font-weight: 300;
+}
+
+.btn-login {
+    font-size: 0.9rem;
+    letter-spacing: 0.05rem;
+    padding: 0.75rem 1rem;
+}
