@@ -68,3 +68,5 @@
 ###############################################################################
 PhishingPlatform/css/** linguist-vendored
 PhishingPlatform/js/** linguist-vendored
+PhishingPlatform/Content/styles.css linguist-vendored
+PhishingPlatform/Views/**/*.cshtml linguist-language=C#
