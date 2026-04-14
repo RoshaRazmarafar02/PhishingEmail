@@ -20,7 +20,7 @@ namespace PhishingPlatform.Controllers
     public class PhishingController : Controller
     {
 
-        string CONNECTION_STRING = "Data Source = localhost\\MSSQLSERVER01;Initial Catalog = PhishingPlatformDB; Integrated Security = True";
+        string CONNECTION_STRING = System.Configuration.ConfigurationManager.ConnectionStrings["PhishingPlatformDBConnectionString"].ConnectionString;
         public SqlConnection openConnection()
         {
             SqlConnection con = new SqlConnection(CONNECTION_STRING);
@@ -404,7 +404,10 @@ namespace PhishingPlatform.Controllers
             {
                 var email = new MimeMessage();
 
-                email.From.Add(new MailboxAddress(senderName, "rosharazmarafar@gmail.com"));
+                string smtpEmail = System.Configuration.ConfigurationManager.AppSettings["SmtpEmail"];
+                string smtpPassword = System.Configuration.ConfigurationManager.AppSettings["SmtpPassword"];
+
+                email.From.Add(new MailboxAddress(senderName, smtpEmail));
                 email.To.Add(new MailboxAddress(viewModel.SelectedEmail, viewModel.SelectedEmail));
                 Debug.WriteLine($"Selected email ID: {ID}");
                 email.Subject = sub;
@@ -416,9 +419,7 @@ namespace PhishingPlatform.Controllers
                 using (var client = new MailKit.Net.Smtp.SmtpClient())
                 {
                     await client.ConnectAsync("smtp.gmail.com", 587, false);
-
-                    // Note: only needed if the SMTP server requires authentication
-                    await client.AuthenticateAsync("rosharazmarafar@gmail.com", "snvj hdqu laqz ccjl");
+                    await client.AuthenticateAsync(smtpEmail, smtpPassword);
 
                     await client.SendAsync(email);
                     await client.DisconnectAsync(true);

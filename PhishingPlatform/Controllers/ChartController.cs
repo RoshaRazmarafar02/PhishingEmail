@@ -58,7 +58,7 @@ namespace PhishingPlatform.Controllers
             }
         }
 
-        private string CONNECTION_STRING = "Data Source=localhost\\MSSQLSERVER01;Initial Catalog=PhishingPlatformDB;Integrated Security=True";
+        private string CONNECTION_STRING = System.Configuration.ConfigurationManager.ConnectionStrings["PhishingPlatformDBConnectionString"].ConnectionString;
 
         public PhishingInteractionsModel GetPhishingInteractionsCounts()
         {

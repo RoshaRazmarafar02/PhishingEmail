@@ -12,7 +12,7 @@ namespace PhishingPlatform.Controllers
 {
     public class AdminController : Controller
     {
-        string CONNECTION_STRING = "Data Source = localhost\\MSSQLSERVER01;Initial Catalog = PhishingPlatformDB; Integrated Security = True";
+        string CONNECTION_STRING = System.Configuration.ConfigurationManager.ConnectionStrings["PhishingPlatformDBConnectionString"].ConnectionString;
 
         // GET: Admin
         [HttpGet]

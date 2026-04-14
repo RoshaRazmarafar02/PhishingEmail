@@ -61,3 +61,10 @@
 #*.PDF   diff=astextplain
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
+
+###############################################################################
+# Tell GitHub Linguist to ignore vendored Bootstrap assets so that
+# C# is reported as the primary language instead of CSS/JavaScript.
+###############################################################################
+PhishingPlatform/css/** linguist-vendored
+PhishingPlatform/js/** linguist-vendored
